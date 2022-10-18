@@ -174,6 +174,241 @@ game.import("extension",(lib,game,ui,get,ai,_status)=>{
 					lib.rank[i].addArray(RANK[i]);
 				}
 			}
+
+			// 下载进度条
+			if (typeof game.shijianCreateProgress != 'function') {
+				game.shijianCreateProgress = (title, max, fileName, value) => {
+					const parent = ui.create.div(ui.window, {
+						textAlign: 'center',
+						width: '300px',
+						height: '150px',
+						left: 'calc(50% - 150px)',
+						top: 'auto',
+						bottom: 'calc(50% - 75px)',
+						zIndex: '10',
+						boxShadow: 'rgb(0 0 0 / 40 %) 0 0 0 1px, rgb(0 0 0 / 20 %) 0 3px 10px',
+						backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4))',
+						borderRadius: '8px'
+					});
+
+					// 可拖动
+					parent.className = 'dialog';
+
+					const container = ui.create.div(parent, {
+						position: 'absolute',
+						top: '0',
+						left: '0',
+						width: '100%',
+						height: '100%'
+					});
+
+					container.ontouchstart = ui.click.dialogtouchStart;
+					container.ontouchmove = ui.click.touchScroll;
+					container.style.WebkitOverflowScrolling = 'touch';
+					parent.ontouchstart = ui.click.dragtouchdialog;
+
+					const caption = ui.create.div(container, '', title, {
+						position: 'relative',
+						paddingTop: '8px',
+						fontSize: '20px'
+					});
+
+					ui.create.node('br', container);
+
+					const tip = ui.create.div(container, {
+						position: 'relative',
+						paddingTop: '8px',
+						fontSize: '20px',
+						width: '100%'
+					});
+
+					const file = ui.create.node('span', tip, '', fileName);
+					file.style.width = file.style.maxWidth = '100%';
+					ui.create.node('br', tip);
+					const index = ui.create.node('span', tip, '', String(value || '0'));
+					ui.create.node('span', tip, '', '/');
+					const maxSpan = ui.create.node('span', tip, '', String(max || '未知'));
+
+					ui.create.node('br', container);
+
+					const progress = ui.create.node('progress.zxgxProgress', container);
+					progress.setAttribute('value', value || '0');
+					progress.setAttribute('max', max);
+
+					parent.getTitle = () => caption.innerText;
+					parent.setTitle = (title) => caption.innerText = title;
+					parent.getFileName = () => file.innerText;
+					parent.setFileName = (name) => file.innerText = name;
+					parent.getProgressValue = () => progress.value;
+					parent.setProgressValue = (value) => progress.value = index.innerText = value;
+					parent.getProgressMax = () => progress.max;
+					parent.setProgressMax = (max) => progress.max = maxSpan.innerText = max;
+					return parent;
+				};
+			}
+
+			// 扩展自动更新(等游戏加载完成后再获取更新, 因为可以等待其他扩展加载完成)
+			lib.arenaReady.push(() => {
+				// 若lib.extensionPack.大乱桌斗不存在，就是这个扩展还没有开启
+				if (lib.extensionPack.大乱桌斗) {
+					const address = 'https://nonameShijian.unitedrhythmized.club/noname-android-extension/main/extension/大乱桌斗/';
+					fetch(address + 'update.js')
+						.then(response => {
+							if (!response.ok) throw response;
+							return response.text();
+						})
+						.then(text => {
+							const data = eval(text);
+							console.log(data);
+							const localVersion = lib.extensionPack.大乱桌斗.version || '0';
+							if (data.version == localVersion) return;
+							else {
+								/** 
+								 * 判断版本
+								 * @param { string } v1 现有版本
+								 * @param { string } v2 要更新的版本
+								 * @returns { boolean | 'equal' } v1比v2小就返回true
+								 */
+								function compareVersion(v1 = '', v2 = '') {
+									// 相等版本
+									if (v1 === v2) return 'equal';
+									let version_1 = v1.split('.').map(item => Number(item) || 0);
+									let version_2 = v2.split('.').map(item => Number(item) || 0);
+									// 现有版本: 无
+									if (version_1.length == 1 && version_1[0] == 0) {
+										// 要更新的版本不是 无
+										if (version_2.length > 1 || version_2[0] > 0) return true;
+									} else if (version_2.length == 1 && version_2[0] == 0) {
+										// 要更新的版本是 无
+										return true;
+									} else {
+										for (let i = 0; i < version_1.length && i < version_2.length; i++) {
+											version_1[i] = version_1[i] || 0;
+											version_2[i] = version_2[i] || 0;
+											if (version_2[i] > version_1[i]) return true;
+											if (version_1[i] > version_2[i]) return false;
+										}
+									}
+								};
+
+								if (!compareVersion(localVersion, data.version)) return;
+							}
+
+							function myConfirm(message, callback) {
+								if (navigator.notification && navigator.notification.confirm) {
+									navigator.notification.confirm(message, index => {
+										index == 1 && callback();
+									}, ['确定', '取消']);
+								} else {
+									window.confirm(message) && callback();
+								}
+							}
+
+							myConfirm(`大乱桌斗扩展检测到更新(v${data.version}), 是否更新?\n${data.changeLog}`, () => {
+								/**
+								 * 下载一个文件
+								 * @param { string } url 
+								 */
+								function download(url, success, error) {
+									const path = 'extension/大乱桌斗';
+									if (window.FileTransfer) {
+										// 判断是不是文件夹，不是才下载
+										function downloadFile() {
+											let fileTransfer = new FileTransfer();
+											fileTransfer.download(encodeURI(`${address + url}?date=${(new Date()).getTime()}`), encodeURI(lib.assetURL + path + '/' + url), success, error);
+										}
+										window.resolveLocalFileSystemURL(lib.assetURL,
+											/**
+											 * @param { DirectoryEntry } DirectoryEntry 
+											 */
+											DirectoryEntry => {
+												DirectoryEntry.getDirectory(path, { create: false }, dir => {
+													dir.getDirectory(url, { create: false }, () => {
+														console.error(`${path}/${url}是文件夹`);
+														// 跳过下载
+														success(true);
+													}, downloadFile);
+												}, downloadFile);
+											}, downloadFile);
+									} else {
+										fetch(`${address + url}?date=${(new Date()).getTime()}`)
+											.then(response => response.arrayBuffer())
+											.then(arrayBuffer => {
+												// 先创建指定文件夹
+												game.ensureDirectory(path, () => {
+													const fs = require('fs');
+													const p = require('path');
+													const filePath = p.join(__dirname, path, url);
+													// 如果是个文件夹，就退出
+													if (fs.existsSync(filePath)) {
+														const stat = fs.statSync(filePath);
+														if (stat.isDirectory()) {
+															console.error(`${path + '/' + url}是个文件夹`);
+															return success(true);
+														}
+													}
+													fs.writeFile(filePath, Buffer.from(arrayBuffer), null, e => {
+														if (e) error(e);
+														else success();
+													});
+												});
+											})
+											.catch(response => error(new Error(response.statusText)));
+									}
+								}
+
+								/**
+								 * 下载文件列表
+								 * @param { string[] } files 
+								 */
+								function downloadList(files) {
+									if (!Array.isArray(files) || files.length == 0) return;
+									let i = 0;
+									const progress = game.shijianCreateProgress('更新大乱桌斗扩展', files.length, files[0], i);
+									const success = skip => {
+										// 下载完了就结束
+										if (!files[++i]) {
+											progress.setProgressValue(files.length);
+											progress.setFileName('下载完成');
+											setTimeout(() => {
+												// 移除进度条
+												progress.remove();
+												// 延时提示
+												setTimeout(() => {
+													alert('大乱桌斗扩展更新完成，将自动重启');
+													game.reload();
+												}, 100);
+											}, 200);
+											return;
+										}
+										// 下载成功，更新进度
+										progress.setProgressValue(i);
+										progress.setFileName(files[i]);
+										download(files[i], success, error);
+									};
+									const error = e => {
+										console.log('下载失败', e);
+										progress.setFileName('重新下载: ' + files[i]);
+										download(files[i], success, error);
+									};
+
+									download(files[i], success, error);
+								}
+
+								/** @type { string[] } 要下载的文件 */
+								const files = localVersion == data.oldversion ? data.updateFiles : data.allFiles;
+								downloadList(files);
+							});
+						})
+						.catch(e => {
+							if (e.message == 'Failed to fetch') alert('网络连接失败');
+							else if (e instanceof Response) console.error('大乱桌斗: ' + e.statusText);
+							else console.error('其他错误', e);
+						});
+				} else {
+					console.error('lib.extensionPack.大乱桌斗不存在，无法在线更新');
+				}
+			});
 		},
 		precontent:config=>{
 			if(config.enable){
@@ -2117,7 +2352,7 @@ game.import("extension",(lib,game,ui,get,ai,_status)=>{
 			author:"Show-K",
 			diskURL:"https://github.com/Show-K/noname",
 			forumURL:"https://unitedrhythmized.club/html/work/game/super-smash-tabletop.html",
-			version:"2"
+			version:"2.1"
 		},
 		files:{
 			character:[],

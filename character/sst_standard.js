@@ -6,18 +6,6 @@ game.import("character",(lib,game,ui,get,ai,_status)=>{
 	const SST_STANDARD={
 		name:"sst_standard",
 		connect:true,
-		characterSort:{
-			sst_standard:{
-				sst_64:["sst_mario","sst_donkey_kong","sst_link","sst_samus","sst_yoshi","sst_kirby","sst_luigi","sst_captain_falcon","sst_jigglypuff","sst_fox","sst_pikachu"],
-				sst_melee:["sst_bowser","sst_peach","sst_zelda","sst_dr_mario","sst_ganondorf","sst_mr_game_watch","sst_marth","sst_young_link","sst_pichu","sst_falco","sst_mewtwo"],
-				sst_brawl:["sst_zero_suit_samus","sst_wario","sst_pokemon_trainer_red","sst_meta_knight","sst_ike","sst_toon_link","sst_wolf","sst_king_dedede","sst_lucario","sst_sonic","sst_pokemon_trainer_leaf","sst_olimar"],
-				sst_4:["sst_villager","sst_rosalina","sst_little_mac","sst_greninja","sst_palutena","sst_bowser_jr","sst_koopalings","sst_ryu","sst_mega_man","sst_corrin","sst_mii_fighters","sst_pac_man","sst_bayonetta"],
-				sst_ultimate:["sst_dark_samus","sst_daisy","sst_ridley","sst_simon","sst_richter","sst_king_k_rool","sst_isabelle","sst_incineroar","sst_ken"],
-				sst_dlc:["sst_terry","sst_byleth_male","sst_byleth_female","sst_joker","sst_steve","sst_alex","sst_hero","sst_min_min","sst_sephiroth","sst_enderman","sst_kazuya","sst_sora","sst_piranha_plant"],
-				sst_spirits:["sst_dark_link","sst_waluigi","sst_master_hand","sst_spring_man","sst_rex","sst_cuphead_mugman","sst_krystal","sst_kyo_kusanagi","sst_pauline","sst_dr_wily","sst_kraid"],
-				sst_players:["sst_mario_not_mary","sst_yumikohimi","sst_massy","sst_haine","sst_oc","sst_mr_8","sst_kyuukou","sst_windier","sst_rentianshu","sst_srf","sst_miumiu","sst_ma","sst_feiji","sst_marioraz"]
-			}
-		},
 		character:{
 			sst_mario:["male","sst_light",4,["sst_jueyi"],["type:neutral","primary:1","attack:1.6","defense:1.6"]],
 			sst_link:["male","sst_light",4,["sst_qingyong"],["type:shield","primary:1.4","attack:1.9","defense:1.6"]],
@@ -119,6 +107,18 @@ game.import("character",(lib,game,ui,get,ai,_status)=>{
 		},
 		characterFilter:{
 			sst_corrin:mode=>mode=="identity"||mode=="th_mougong"
+		},
+		characterSort:{
+			sst_standard:{
+				sst_64:["sst_mario","sst_donkey_kong","sst_link","sst_samus","sst_yoshi","sst_kirby","sst_luigi","sst_captain_falcon","sst_jigglypuff","sst_fox","sst_pikachu"],
+				sst_melee:["sst_bowser","sst_peach","sst_zelda","sst_dr_mario","sst_ganondorf","sst_mr_game_watch","sst_marth","sst_young_link","sst_pichu","sst_falco","sst_mewtwo"],
+				sst_brawl:["sst_zero_suit_samus","sst_wario","sst_pokemon_trainer_red","sst_meta_knight","sst_ike","sst_toon_link","sst_wolf","sst_king_dedede","sst_lucario","sst_sonic","sst_pokemon_trainer_leaf","sst_olimar"],
+				sst_4:["sst_villager","sst_rosalina","sst_little_mac","sst_greninja","sst_palutena","sst_bowser_jr","sst_koopalings","sst_ryu","sst_mega_man","sst_corrin","sst_mii_fighters","sst_pac_man","sst_bayonetta"],
+				sst_ultimate:["sst_dark_samus","sst_daisy","sst_ridley","sst_simon","sst_richter","sst_king_k_rool","sst_isabelle","sst_incineroar","sst_ken"],
+				sst_dlc:["sst_terry","sst_byleth_male","sst_byleth_female","sst_joker","sst_steve","sst_alex","sst_hero","sst_min_min","sst_sephiroth","sst_enderman","sst_kazuya","sst_sora","sst_piranha_plant"],
+				sst_spirits:["sst_dark_link","sst_waluigi","sst_master_hand","sst_spring_man","sst_rex","sst_cuphead_mugman","sst_krystal","sst_kyo_kusanagi","sst_pauline","sst_dr_wily","sst_kraid"],
+				sst_players:["sst_mario_not_mary","sst_yumikohimi","sst_massy","sst_haine","sst_oc","sst_mr_8","sst_kyuukou","sst_windier","sst_rentianshu","sst_srf","sst_miumiu","sst_ma","sst_feiji","sst_marioraz"]
+			}
 		},
 		characterIntro:{
 			/*
@@ -1253,7 +1253,91 @@ game.import("character",(lib,game,ui,get,ai,_status)=>{
 			sst_piranha_plant:"层林尽染",
 			sst_bayonetta:"猎天使魔女"
 		},
+		perfectPair:{
+			sst_mario:["sst_yoshi","sst_dr_mario","sst_rosalina","sst_luigi","sst_bowser","sst_peach","sst_donkey_kong","sst_daisy","sst_bowser_jr","sst_koopalings","sst_wario","sst_waluigi","sst_pauline","sst_piranha_plant"],
+			sst_bowser:["sst_bowser_jr","sst_koopalings","sst_peach"],
+			sst_bowser_jr:["sst_koopalings"],
+			sst_luigi:["sst_yoshi","sst_peach","sst_daisy"],
+			sst_peach:["sst_daisy"],
+			sst_wario:["sst_waluigi"],
+			sst_link:["sst_zelda","sst_young_link","sst_ocarina_of_time_link","sst_toon_link","sst_massy"],
+			sst_zelda:["sst_young_link","sst_ocarina_of_time_link","sst_toon_link"],
+			sst_villager:["sst_isabelle"],
+			sst_samus:["sst_zero_suit_samus"],
+			sst_byleth_male:["sst_byleth_female"],
+			sst_simon:["sst_richter"],
+			sst_mario_not_mary:["sst_yumikohimi","sst_bowser"],
+			sst_yumikohimi:["sst_terry"],
+			sst_kyuukou:["sst_windier","sst_incineroar"],
+			sst_oc:["sst_bowser"],
+			sst_windier:["sst_little_mac"],
+			sst_ryu:["sst_ken"],
+			sst_kirby:["sst_meta_knight","sst_king_dedede"],
+			sst_meta_knight:["sst_king_dedede"],
+			sst_fox:["sst_falco","sst_krystal","sst_wolf"],
+			sst_pikachu:["sst_pichu"],
+			sst_steve:["sst_alex"],
+			sst_pokemon_trainer_red:["sst_pokemon_trainer_red","sst_pikachu"],
+			sst_pokemon_trainer_leaf:["sst_pikachu"],
+			sst_pauline:["sst_donkey_kong"]
+		},
 		skill:{
+			//System
+			_sst_sex_select:{
+				charlotte:true,
+				superCharlotte:true,
+				trigger:{
+					global:'gameStart',
+					player:['enterGame','showCharacterEnd']
+				},
+				ruleSkill:true,
+				silent:true,
+				firstDo:true,
+				priority:2020,
+				filter:(event,player)=>player.sex=='',
+				content:()=>{
+					'step 0'
+					player.chooseControl('male','female').set('prompt','选择性别').set('ai',()=>['male','female'].randomGet());
+					'step 1'
+					player.sex=result.control;
+					game.broadcast((player,sex)=>player.sex=sex,player,result.control);
+					const name=player.name;
+					const differentAvatar=['sst_corrin','sst_robin','nnk_robin','sst_inkling'];
+					if(differentAvatar.contains(name)) player.setAvatar(name,name+'_'+result.control);
+					game.log(player,'将性别变为了','#y'+get.translation(result.control));
+					const differentGroup={sst_corrin_male:'sst_dark',sst_corrin_female:'sst_light'};
+					if(typeof differentGroup[name+'_'+result.control]=='string') player.changeGroup(differentGroup[name+'_'+result.control]);
+					player.update();
+				}
+			},
+			_sst_group_select:{
+				charlotte:true,
+				superCharlotte:true,
+				trigger:{
+					global:'gameStart',
+					player:['enterGame','showCharacterEnd']
+				},
+				ruleSkill:true,
+				silent:true,
+				firstDo:true,
+				priority:2019,
+				filter:(event,player)=>!get.config('no_group')&&player.group=='sst_smash',
+				content:()=>{
+					'step 0'
+					player.chooseControl('sst_light','sst_dark','sst_spirit','sst_reality').set('prompt','选择势力').set('ai',()=>{
+						if(game.zhu&&game.zhu!=_status.event.player&&get.attitude(_status.event.player,game.zhu)>0&&_status.event.controls.contains(game.zhu.group)) return game.zhu.group;
+						return _status.event.controls.randomGet();
+					});
+					'step 1'
+					player.changeGroup(result.control);
+					player.update();
+				}
+			},
+			braces:{
+				intro:{
+					content:'#'
+				}
+			},
 			//Mario
 			sst_jueyi:{
 				mod:{
@@ -12652,34 +12736,6 @@ game.import("character",(lib,game,ui,get,ai,_status)=>{
 			sst_marioraz:"Marioraz",
 			sst_piranha_plant:"Piranha Plant",
 			sst_bayonetta:"Bayonetta"
-		},
-		perfectPair:{
-			sst_mario:["sst_yoshi","sst_dr_mario","sst_rosalina","sst_luigi","sst_bowser","sst_peach","sst_donkey_kong","sst_daisy","sst_bowser_jr","sst_koopalings","sst_wario","sst_waluigi","sst_pauline","sst_piranha_plant"],
-			sst_bowser:["sst_bowser_jr","sst_koopalings","sst_peach"],
-			sst_bowser_jr:["sst_koopalings"],
-			sst_luigi:["sst_yoshi","sst_peach","sst_daisy"],
-			sst_peach:["sst_daisy"],
-			sst_wario:["sst_waluigi"],
-			sst_link:["sst_zelda","sst_young_link","sst_ocarina_of_time_link","sst_toon_link","sst_massy"],
-			sst_zelda:["sst_young_link","sst_ocarina_of_time_link","sst_toon_link"],
-			sst_villager:["sst_isabelle"],
-			sst_samus:["sst_zero_suit_samus"],
-			sst_byleth_male:["sst_byleth_female"],
-			sst_simon:["sst_richter"],
-			sst_mario_not_mary:["sst_yumikohimi","sst_bowser"],
-			sst_yumikohimi:["sst_terry"],
-			sst_kyuukou:["sst_windier","sst_incineroar"],
-			sst_oc:["sst_bowser"],
-			sst_windier:["sst_little_mac"],
-			sst_ryu:["sst_ken"],
-			sst_kirby:["sst_meta_knight","sst_king_dedede"],
-			sst_meta_knight:["sst_king_dedede"],
-			sst_fox:["sst_falco","sst_krystal","sst_wolf"],
-			sst_pikachu:["sst_pichu"],
-			sst_steve:["sst_alex"],
-			sst_pokemon_trainer_red:["sst_pokemon_trainer_red","sst_pikachu"],
-			sst_pokemon_trainer_leaf:["sst_pikachu"],
-			sst_pauline:["sst_donkey_kong"]
 		},
 		help:{
 			"大乱桌斗":"<div style=\"margin:10px\">\

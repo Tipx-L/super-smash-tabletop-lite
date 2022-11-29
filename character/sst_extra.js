@@ -6,15 +6,6 @@ game.import("character",(lib,game,ui,get,ai,_status)=>{
 	const SST_EXTRA={
 		name:"sst_extra",
 		connect:true,
-		characterSort:{
-			sst_extra:{
-				sst_civil_war:["sst_pyra_mythra","sst_9_volt_18_volt"],
-				sst_response:["sst_claude","sst_geno","sst_duck_hunt","sst_paipai","sst_snake","sst_sheik"],
-				sst_the_use_of_spies:["sst_inkling"],
-				sst_laying_plans:["sst_ness","sst_chrom","sst_lucina","sst_robin","sst_bandana_waddle_dee","sst_sans","sst_wii_fit_trainer"],
-				sst_attack_by_stratagem:["sst_magolor","sst_roy","sst_r_o_b"]
-			}
-		},
 		character:{
 			//Soldier
 			shibing1sst_light:["male","sst_light",0,[],["unseen"]],
@@ -56,6 +47,15 @@ game.import("character",(lib,game,ui,get,ai,_status)=>{
 			sst_claude:()=>{
 				if(_status.connectMode) return lib.config.connect_cards.contains("yingbian");
 				return lib.config.cards.contains("yingbian");
+			}
+		},
+		characterSort:{
+			sst_extra:{
+				sst_civil_war:["sst_pyra_mythra","sst_9_volt_18_volt"],
+				sst_response:["sst_claude","sst_geno","sst_duck_hunt","sst_paipai","sst_snake","sst_sheik"],
+				sst_the_use_of_spies:["sst_inkling"],
+				sst_laying_plans:["sst_ness","sst_chrom","sst_lucina","sst_robin","sst_bandana_waddle_dee","sst_sans","sst_wii_fit_trainer"],
+				sst_attack_by_stratagem:["sst_magolor","sst_roy","sst_r_o_b"]
 			}
 		},
 		characterIntro:{
@@ -317,8 +317,74 @@ game.import("character",(lib,game,ui,get,ai,_status)=>{
 			sst_inkling:"瞎喷乱涂",
 			sst_wii_fit_trainer:"修身养性"
 		},
+		perfectPair:{
+			sst_pyra_mythra:["sst_rex"],
+			sst_9_volt_18_volt:["sst_wario"],
+			sst_claude:["sst_byleth_male","sst_byleth_female"],
+			sst_geno:["sst_mario","sst_bowser","sst_peach"],
+			sst_chrom:["sst_marth","sst_lucina","sst_robin"],
+			sst_lucina:["sst_marth","sst_robin"],
+			sst_bandana_waddle_dee:["sst_kirby","sst_meta_knight","sst_king_dedede"],
+			sst_magolor:["sst_kirby","sst_meta_knight","sst_king_dedede","sst_bandana_waddle_dee"],
+			sst_sheik:["sst_zelda"]
+		},
 		skill:{
-			//Civil War mode reference
+			//System
+			_sst_sex_select:{
+				charlotte:true,
+				superCharlotte:true,
+				trigger:{
+					global:'gameStart',
+					player:['enterGame','showCharacterEnd']
+				},
+				ruleSkill:true,
+				silent:true,
+				firstDo:true,
+				priority:2020,
+				filter:(event,player)=>player.sex=='',
+				content:()=>{
+					'step 0'
+					player.chooseControl('male','female').set('prompt','选择性别').set('ai',()=>['male','female'].randomGet());
+					'step 1'
+					player.sex=result.control;
+					game.broadcast((player,sex)=>player.sex=sex,player,result.control);
+					const name=player.name;
+					const differentAvatar=['sst_corrin','sst_robin','nnk_robin','sst_inkling'];
+					if(differentAvatar.contains(name)) player.setAvatar(name,name+'_'+result.control);
+					game.log(player,'将性别变为了','#y'+get.translation(result.control));
+					const differentGroup={sst_corrin_male:'sst_dark',sst_corrin_female:'sst_light'};
+					if(typeof differentGroup[name+'_'+result.control]=='string') player.changeGroup(differentGroup[name+'_'+result.control]);
+					player.update();
+				}
+			},
+			_sst_group_select:{
+				charlotte:true,
+				superCharlotte:true,
+				trigger:{
+					global:'gameStart',
+					player:['enterGame','showCharacterEnd']
+				},
+				ruleSkill:true,
+				silent:true,
+				firstDo:true,
+				priority:2019,
+				filter:(event,player)=>!get.config('no_group')&&player.group=='sst_smash',
+				content:()=>{
+					'step 0'
+					player.chooseControl('sst_light','sst_dark','sst_spirit','sst_reality').set('prompt','选择势力').set('ai',()=>{
+						if(game.zhu&&game.zhu!=_status.event.player&&get.attitude(_status.event.player,game.zhu)>0&&_status.event.controls.contains(game.zhu.group)) return game.zhu.group;
+						return _status.event.controls.randomGet();
+					});
+					'step 1'
+					player.changeGroup(result.control);
+					player.update();
+				}
+			},
+			braces:{
+				intro:{
+					content:'#'
+				}
+			},
 			_guozhan_marks:{
 				ruleSkill:true,
 				enable:"phaseUse",
@@ -424,6 +490,21 @@ game.import("character",(lib,game,ui,get,ai,_status)=>{
 						player.viewCharacter(event.target,1);
 					}
 				}
+			},
+			_useAnger_juedou:{
+				ruleSkill:true,
+				charlotte:true,
+				forced:true,
+				popup:false,
+				trigger:{source:'damageBegin1'},
+				filter:(event,player)=>{
+					const evt=event.getParent(2);
+					if(!evt||evt.name!='useCard') return false;
+					if(typeof evt.th_anger!='object') return false;
+					if(typeof evt.th_anger[player.playerid]!='number') return false;
+					return evt.th_anger[player.playerid]!=0;
+				},
+				content:()=>trigger.num+=trigger.getParent(2).th_anger[player.playerid]
 			},
 			//Pyra/Mythra
 			sst_xuanyi:{
@@ -2583,7 +2664,7 @@ game.import("character",(lib,game,ui,get,ai,_status)=>{
 			}
 		},
 		characterReplace:{},
-		translate: {
+		translate:{
 			//Civil War mode reference
 			_guozhan_marks:"标记",
 			_guozhan_marks_backup:"标记",
@@ -2760,17 +2841,6 @@ game.import("character",(lib,game,ui,get,ai,_status)=>{
 			sst_sheik:"Sheik",
 			sst_inkling:"Inkling",
 			sst_wii_fit_trainer:"Wii Fit Trainer"
-		},
-		perfectPair:{
-			sst_pyra_mythra:["sst_rex"],
-			sst_9_volt_18_volt:["sst_wario"],
-			sst_claude:["sst_byleth_male","sst_byleth_female"],
-			sst_geno:["sst_mario","sst_bowser","sst_peach"],
-			sst_chrom:["sst_marth","sst_lucina","sst_robin"],
-			sst_lucina:["sst_marth","sst_robin"],
-			sst_bandana_waddle_dee:["sst_kirby","sst_meta_knight","sst_king_dedede"],
-			sst_magolor:["sst_kirby","sst_meta_knight","sst_king_dedede","sst_bandana_waddle_dee"],
-			sst_sheik:["sst_zelda"]
 		},
 		help:{
 			"乱斗EX":"<div style=\"margin:10px\">\

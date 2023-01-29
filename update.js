@@ -1,22 +1,50 @@
 (() => ({
 	// 扩展版本
-	version: "2.1.11",
+	version: "2.1.12",
 	// 扩展的上一个版本
-	oldversion: "2.1.10",
+	oldversion: "2.1.11",
 	// 更新内容汇总
 	changeLog: "1. 修复了一些小问题。",
 	// 本次更新的所有文件(不包括文件夹)
 	updateFiles: [
+		"extension.css",
 		"extension.js",
+		"LICENSE",
+		"README.md",
 		"update.js",
 		"card/sst_standard.js",
 		"character/sst_extra.js",
-		"character/sst_standard.js"
+		"character/sst_standard.js",
+		"image/character/shibing1.png",
+		"image/character/shibing1sst_dark.png",
+		"image/character/shibing1sst_light.png",
+		"image/character/shibing1sst_reality.png",
+		"image/character/shibing1sst_smash.png",
+		"image/character/shibing1sst_spirit.png",
+		"image/character/shibing2.png",
+		"image/character/shibing2sst_dark.png",
+		"image/character/shibing2sst_light.png",
+		"image/character/shibing2sst_reality.png",
+		"image/character/shibing2sst_smash.png",
+		"image/character/shibing2sst_spirit.png",
+		"image/character/sst_9_volt_18_volt.png",
+		"image/character/sst_alex.png",
+		"image/character/sst_enderman.png",
+		"image/character/sst_king_dedede.png",
+		"image/character/sst_king_k_rool.png",
+		"image/character/sst_little_mac.png",
+		"image/character/sst_ryu.png",
+		"image/character/sst_steve.png",
+		"image/character/sst_villager.png",
+		"image/character/sst_wario.png",
+		"image/character/sst_yoshi.png"
 	],
 	// 扩展内所有文件(不包括文件夹)
 	allFiles: [
 		"extension.css",
 		"extension.js",
+		"LICENSE",
+		"README.md",
 		"super_smash_tabletop.png",
 		"update.js",
 		"card/sst_standard.js",

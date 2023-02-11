@@ -260,8 +260,8 @@ game.import("card",(lib,game,ui,get,ai,_status)=>{
 		},
 		list:[]
 	};
-	for(const i in SST_STANDARD.card){
-		SST_STANDARD.card[i].image=(`ext:大乱桌斗/image/card/${i}.png`);
+	for(const card in SST_STANDARD.card){
+		SST_STANDARD.card[card].image=(`ext:大乱桌斗/image/card/${card}.png`);
 	}
 	return SST_STANDARD;
 });

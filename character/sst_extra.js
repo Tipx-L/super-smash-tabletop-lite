@@ -3469,13 +3469,13 @@ game.import("character",(lib,game,ui,get,ai,_status)=>{
 		}
 	};
 	if(lib.device||lib.node){
-		for(const i in SST_EXTRA.character){
-			SST_EXTRA.character[i][4].push(`ext:大乱桌斗/image/character/${i}.png`);
+		for(const character in SST_EXTRA.character){
+			SST_EXTRA.character[character][4].push(`ext:大乱桌斗/image/character/${character}.png`);
 		}
 	}
 	else{
-		for(const i in SST_EXTRA.character){
-			SST_EXTRA.character[i][4].push(`db:extension-大乱桌斗:image/character/${i}.png`);
+		for(const character in SST_EXTRA.character){
+			SST_EXTRA.character[character][4].push(`db:extension-大乱桌斗:image/character/${character}.png`);
 		}
 	}
 	return SST_EXTRA;

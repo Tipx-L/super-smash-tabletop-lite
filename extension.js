@@ -960,7 +960,7 @@ game.import("extension",(lib,game,ui,get,ai,_status)=>{
 				const GROUP=['sst_light','sst_dark','sst_spirit','sst_reality','sst_smash'];
 				lib.group.addArray(GROUP);
 				if(typeof lib.decade_extGroupImage!="object") lib.decade_extGroupImage={};
-				GROUP.forEach(i=>lib.decade_extGroupImage[i]=`${lib.assetURL}extension/大乱桌斗/image/decade_extGroupImage/name_${i}.png`);
+				GROUP.forEach(value=>lib.decade_extGroupImage[value]=`${lib.assetURL}extension/大乱桌斗/image/decade_extGroupImage/name_${value}.png`);
 				//Characters & cards
 				lib.init.js(`${lib.assetURL}extension/大乱桌斗/character`,["sst_standard","sst_extra"]);
 				lib.init.js(`${lib.assetURL}extension/大乱桌斗/card`,"sst_standard");

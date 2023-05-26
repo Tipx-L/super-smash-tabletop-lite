@@ -78,7 +78,7 @@ game.import("extension",(lib,game,ui,get,ai,_status)=>{
 			lib.arenaReady.push(() => {
 				// 若lib.extensionPack.大乱桌斗不存在，就是这个扩展还没有开启
 				if (lib.extensionPack.大乱桌斗) {
-					const address = 'https://nonameShijian.unitedrhythmized.club/noname-android-extension/main/extension/大乱桌斗/';
+					const address = 'https://ghproxy.com/https://raw.githubusercontent.com/Show-K/super-smash-tabletop-lite/master/';
 					fetch(`${address}update.js?date=${(new Date()).getTime()}`)
 						.then(response => {
 							if (!response.ok) throw response;
